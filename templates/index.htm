@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Compatibility Suite - MrShadowSec</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #030712;
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-border: rgba(34, 211, 238, 0.25);
+            --neon-green: #10b981;
+            --neon-cyan: #06b6d4;
+            --neon-purple: #a855f7;
+            --neon-red: #ef4444;
+            --neon-yellow: #f59e0b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.12) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 14px;
+            color: var(--text-main);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 0 35px rgba(6, 182, 212, 0.15);
+            position: relative;
+        }
+
+        /* 1st Point: Developer & TikTok Info */
+        .dev-header {
+            text-align: center;
+            margin-bottom: 18px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-bottom: 14px;
+        }
+        .dev-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .tiktok-link {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: #fff;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: 0.3s;
+        }
+        .tiktok-link:hover {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+        }
+
+        /* 2nd Point: Main Title */
+        .app-title {
+            text-align: center;
+            font-size: 1.35rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 3rd Point: Upload Box (Compact) */
+        .upload-box {
+            border: 1.5px dashed var(--neon-cyan);
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            background: rgba(6, 182, 212, 0.03);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 14px;
+        }
+        .upload-box:hover {
+            background: rgba(6, 182, 212, 0.08);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+        .upload-text { font-size: 0.88rem; font-weight: 700; color: var(--neon-cyan); }
+        .upload-hint { font-size: 0.75rem; color: var(--text-sub); margin-top: 2px; }
+        #fileInput { display: none; }
+        .preview-img { max-width: 80px; max-height: 100px; border-radius: 8px; display: none; margin: 8px auto 0 auto; border: 1px solid var(--neon-cyan); }
+
+        /* 4th Point: Action Button (Compact) */
+        .btn-process {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            color: #000;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            margin-bottom: 18px;
+        }
+        .btn-process:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 22px rgba(168, 85, 247, 0.5);
+            color: #fff;
+        }
+
+        /* 5th Point: Device Info Inputs Grid */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        @media (max-width: 520px) { .specs-grid { grid-template-columns: 1fr; } }
+
+        .spec-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 12px;
+            border-radius: 10px;
+        }
+        .spec-label {
+            font-size: 0.7rem;
+            color: var(--neon-purple);
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .spec-card input, .spec-card select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 0.88rem;
+            font-weight: 600;
+            outline: none;
+        }
+        .spec-card select option { background: #0f172a; color: #fff; }
+
+        /* Result Section */
+        .result-card {
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--card-border);
+            display: none;
+        }
+
+        /* 6th Point: Root Status Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--neon-yellow); border: 1px solid var(--neon-yellow); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--neon-red); border: 1px solid var(--neon-red); }
+
+        /* 7th Point: Bangla Detail Explanation */
+        .explain-box {
+            color: var(--text-sub);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--neon-cyan);
+        }
+
+        /* 8th Point: Root Apps Links */
+        .section-title { font-size: 0.8rem; font-weight: 800; color: var(--neon-cyan); margin-bottom: 8px; text-transform: uppercase; }
+        .links-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+        .app-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.2s;
+        }
+        .app-btn:hover { background: var(--neon-purple); border-color: var(--neon-purple); }
+
+        /* 9th Point: Command Box */
+        .cmd-box {
+            background: #000;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-cyan);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.82rem;
+        }
+        .btn-copy {
+            background: var(--neon-cyan);
+            border: none;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* 11th Point: Facebook Contact Link */
+        .contact-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 14px;
+        }
+        .contact-box a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        /* 12th Point: Hacker Motto (Neon Colorful Gradient & Animation) */
+        .motto {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #06b6d4, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
+            animation: glowPulse 2s infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            from {
+                filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.5));
+            }
+            to {
+                filter: drop-shadow(0 0 18px rgba(236, 72, 153, 0.8));
+            }
+        }
+
+        .thank-you {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- 1st Point: Developer & TikTok Info -->
+    <div class="dev-header">
+        <div class="dev-title">Developer MrShadowSec</div>
+        <a href="https://www.tiktok.com/@mrshadowsec7054" target="_blank" class="tiktok-link">
+            Follow My TikTok Account: <b>mrshadowsec7054</b>
+        </a>
+    </div>
+
+    <!-- 2nd Point: Main Title -->
+    <div class="app-title">Check Root Compatibility Suite</div>
+
+    <!-- 3rd Point: Upload Screenshot Box (Compact) -->
+    <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-text">📸 Upload Screenshot (About Phone)</div>
+        <div class="upload-hint">অটোমেটিক ব্র্যান্ড ও প্রসেসর স্ক্যান করার জন্য ক্লিক করুন</div>
+        <input type="file" id="fileInput" accept="image/*" onchange="previewFile(this.files[0])">
+        <img id="preview" class="preview-img" alt="Preview">
+        <div id="statusMsg" style="display:none; font-size:0.78rem; color:var(--neon-yellow); margin-top:6px;">⏳ OCR Scanning...</div>
+    </div>
+
+    <!-- 4th Point: Action Button (Compact) -->
+    <button class="btn-process" onclick="startAnalysis()">⚡ Process Screenshot & Check (Enter ↵)</button>
+
+    <!-- 5th Point: Device Info Selection -->
+    <form onsubmit="event.preventDefault(); startAnalysis();">
+        <div class="specs-grid">
+            <div class="spec-card">
+                <div class="spec-label">Device Name / Model</div>
+                <input type="text" id="deviceName" placeholder="Ex: OPPO Reno12 Pro" autocomplete="off">
+            </div>
+            <div class="spec-card">
+                <div class="spec-label">Processor (SoC)</div>
+                <select id="chipset">
+                    <option value="dimensity">MediaTek Dimensity / Helio</option>
+                    <option value="snapdragon">Qualcomm Snapdragon</option>
+                    <option value="exynos">Samsung Exynos</option>
+                    <option value="unisoc">Unisoc (SPD)</option>
+                </select>
+            </div>
+            <div class="spec-card">
+                <div class="spec-label">Brand / OS</div>
+                <select id="brand">
+                    <option value="oppo">OPPO (ColorOS)</option>
+                    <option value="realme">Realme (Realme UI)</option>
+                    <option value="xiaomi">Xiaomi / Poco (HyperOS/MIUI)</option>
+                    <option value="samsung">Samsung (One UI)</option>
+                    <option value="oneplus">OnePlus (OxygenOS)</option>
+                    <option value="vivo">Vivo / iQOO (Funtouch)</option>
+                </select>
+            </div>
+            <div class="spec-card">
+                <div class="spec-label">Android Version</div>
+                <select id="android">
+                    <option value="14">Android 14</option>
+                    <option value="13">Android 13</option>
+                    <option value="12">Android 12</option>
+                    <option value="11">Android 11</option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    <!-- Result & Output Details -->
+    <div id="resultCard" class="result-card">
+        
+        <!-- 6th Point: Root hbe kina (Status Badge) -->
+        <span id="badge" class="badge">Status</span>
+        <h3 id="resultTitle" style="font-size: 1.05rem; margin-bottom: 8px;">---</h3>
+
+        <!-- 7th Point: Bangla Explanation -->
+        <div class="explain-box" id="resultDetail">---</div>
+
+        <!-- 8th Point: Root Apps Links (Magisk, KernelSU, APatch) -->
+        <div class="section-title">Root Solutions Apps:</div>
+        <div class="links-grid">
+            <a href="https://github.com/topjohnwu/Magisk/releases" target="_blank" class="app-btn">Magisk App</a>
+            <a href="https://github.com/tiann/KernelSU/releases" target="_blank" class="app-btn">KernelSU</a>
+            <a href="https://github.com/bmax121/APatch/releases" target="_blank" class="app-btn">APatch App</a>
+        </div>
+
+        <!-- 9th Point: Command -->
+        <div class="section-title">Fastboot Unlock Command:</div>
+        <div class="cmd-box">
+            <span id="cmdText">fastboot flashing unlock</span>
+            <button class="btn-copy" onclick="copyCmd()">Copy</button>
+        </div>
+
+        <!-- 10th Point: File & Unlock Tools Link -->
+        <div class="section-title">Firmware & Unlock Tools:</div>
+        <div class="links-grid">
+            <a href="https://androidmtk.com/category/tools" target="_blank" class="app-btn">MTK Client / Flash Tool</a>
+            <a href="https://developer.android.com/studio/releases/platform-tools" target="_blank" class="app-btn">ADB Fastboot Drivers</a>
+            <a href="https://miuirom.org/" target="_blank" class="app-btn">Stock Firmware / Boot.img Search</a>
+        </div>
+
+        <!-- 11th Point: Custom Inbox Link -->
+        <div class="contact-box">
+            🛠️ রুট করে নিতে চাইলে ভিজিট করুন ও ইনবক্স করুন: <br>
+            <a href="https://www.facebook.com/ab.rakib.54966" target="_blank">👉 Click Here To Message On Facebook 👈</a>
+        </div>
+    </div>
+
+    <!-- 12th Point: Hacker Motto & Thank You Message -->
+    <div class="motto">"We do not hack to impress, we hack to express"</div>
+    <div class="thank-you">Thanks for using our Developer Toolkit!</div>
+
+</div>
+
+<script>
+    let selectedFile = null;
+
+    function previewFile(file) {
+        if (!file) return;
+        selectedFile = file;
+        const preview = document.getElementById('preview');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+    }
+
+    function startAnalysis() {
+        if (selectedFile) {
+            const statusMsg = document.getElementById('statusMsg');
+            statusMsg.style.display = 'block';
+
+            Tesseract.recognize(selectedFile, 'eng').then(({ data: { text } }) => {
+                statusMsg.style.display = 'none';
+                const txt = text.toLowerCase();
+
+                if (txt.includes('oppo') || txt.includes('reno')) document.getElementById('brand').value = 'oppo';
+                if (txt.includes('realme')) document.getElementById('brand').value = 'realme';
+                if (txt.includes('xiaomi') || txt.includes('poco')) document.getElementById('brand').value = 'xiaomi';
+                if (txt.includes('samsung')) document.getElementById('brand').value = 'samsung';
+                if (txt.includes('dimensity') || txt.includes('mediatek')) document.getElementById('chipset').value = 'dimensity';
+                if (txt.includes('snapdragon')) document.getElementById('chipset').value = 'snapdragon';
+                
+                runLogic();
+            }).catch(() => {
+                statusMsg.innerText = "⚠️ Auto OCR Failed! Running manual selected options.";
+                runLogic();
+            });
+        } else {
+            runLogic();
+        }
+    }
+
+    function runLogic() {
+        const brand = document.getElementById('brand').value;
+        const deviceName = document.getElementById('deviceName').value || 'আপনার ডিভাইসটি';
+        const card = document.getElementById('resultCard');
+        const badge = document.getElementById('badge');
+        const title = document.getElementById('resultTitle');
+        const detail = document.getElementById('resultDetail');
+        const cmd = document.getElementById('cmdText');
+
+        card.style.display = 'block';
+
+        if (brand === 'oppo' || brand === 'vivo') {
+            badge.className = 'badge badge-danger';
+            badge.innerText = 'Root/Unlock Impossible ❌';
+            title.innerText = `${deviceName} রুট বা আনলক করা যাবে না`;
+            detail.innerHTML = `<b>কেন হবে না:</b> OPPO (ColorOS) এবং Vivo (Funtouch OS) সিকিউরিটি পলিসির কারণে গ্লোবাল ভার্সনের ডিভাইসে অফিশিয়ালি বুটলোডার আনলক করার অনুমতি দেয় না। বুটলোডার না খুললে Magisk বা KernelSU দিয়ে Patch করা সম্ভব নয়।`;
+            cmd.innerText = 'No Command Available';
+        } else if (brand === 'xiaomi') {
+            badge.className = 'badge badge-warning';
+            badge.innerText = 'Conditional / Special Unlock ⚠️';
+            title.innerText = `${deviceName} এ বিশেষ নিয়মে রুট সম্ভব`;
+            detail.innerHTML = `<b>কেন ও কীভাবে হবে:</b> Xiaomi / Poco ডিভাইসে রুট করা যায়, তবে Android 14 / HyperOS আপডেট থাকলে Mi Community App থেকে Level 5 ভেরিফিকেশন আবেদন করে অনুমতি নিতে হবে। বুটলোডার আনলক হওয়ার পর boot.img প্যাচ করে Magisk বা APatch দিয়ে রুট করা যাবে।`;
+            cmd.innerText = 'fastboot oem unlock';
+        } else if (brand === 'realme' || brand === 'oneplus') {
+            badge.className = 'badge badge-success';
+            badge.innerText = '100% Rootable ✔️';
+            title.innerText = `${deviceName} সফলভাবে রুট করা সম্ভব!`;
+            detail.innerHTML = `<b>কেন হবে:</b> Realme ও OnePlus ফোনে বুটলোডার সহজে আনলক করা যায়। In-Depth Test অ্যাপ বা সরাসরি Fastboot দিয়ে আনলক করে স্টক Firmware থেকে boot.img / init_boot.img বের করে Magisk বা KernelSU দিয়ে ফ্ল্যাশ করলেই রুট হয়ে যাবে।`;
+            cmd.innerText = 'fastboot flashing unlock';
+        } else {
+            badge.className = 'badge badge-success';
+            badge.innerText = 'Root Supported ✔️';
+            title.innerText = `${deviceName} রুট করা সম্ভব`;
+            detail.innerHTML = `<b>পদ্ধতি:</b> বুটলোডার আনলক করে Fastboot মোডের মাধ্যমে patched boot.img ফ্ল্যাশ করে খুব সহজেই Magisk/APatch দিয়ে রুট সম্পন্ন করতে পারবেন।`;
+            cmd.innerText = 'fastboot flashing unlock';
+        }
+    }
+
+    function copyCmd() {
+        const cmdText = document.getElementById('cmdText').innerText;
+        navigator.clipboard.writeText(cmdText);
+        alert('Fastboot Command Copied: ' + cmdText);
+    }
+</script>
+
+</body>
+</html>
