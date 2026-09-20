@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MrCheek — Android Device Intelligence</title><link rel="stylesheet" href="/static/style.css">
+</head><body>
+<div class="noise"></div><nav><div class="logo"><span>MR</span>CHEEK</div><div class="navtag">DEVICE INTELLIGENCE</div></nav>
+<main>
+<section class="hero"><div class="pill">● LIVE ANALYZER</div><h1>Know Your<br><span>Android Device.</span></h1>
+<p>Upload an About Phone screenshot. MrCheek extracts the device information and builds a compatibility report.</p></section>
+<section class="upload card" id="drop"><div class="scanicon">⌁</div><h2>Drop your screenshot</h2><p>PNG, JPG or WEBP · Max 10 MB</p>
+<input id="file" type="file" accept="image/*"><button id="go">ANALYZE DEVICE →</button><div id="msg"></div></section>
+<section id="loading" class="card hidden"><div class="loader"></div><h2>Scanning device...</h2><div class="steps"><div>✓ Reading screenshot</div><div>✓ Detecting manufacturer & model</div><div>✓ Reading software build</div><div>◌ Preparing compatibility report</div></div></section>
+<section id="result" class="hidden">
+<div class="devicehero card"><div><div class="eyebrow">DEVICE IDENTIFIED</div><h2 id="deviceName">Unknown</h2><div id="model" class="model"></div></div><div class="confidence"><small>CONFIDENCE</small><b id="conf">—</b></div></div>
+<div class="stats" id="stats"></div>
+<div class="card"><div class="sectiontitle"><span>COMPATIBILITY ANALYSIS</span><small>A–Z CHECK</small></div><div id="checks"></div></div>
+<div class="card note"><b>⚠ Important</b><p>MrCheek provides a compatibility assessment, not a guarantee that a device can be rooted. Bootloader policy, region, exact build and firmware availability must be verified before modification.</p></div>
+</section></main>
+<footer>MR CHEEK · Android Device Intelligence</footer>
+<script src="/static/app.js"></script></body></html>
